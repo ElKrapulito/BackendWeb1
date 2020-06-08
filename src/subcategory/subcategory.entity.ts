@@ -6,7 +6,7 @@ export class SubCategory{
     @PrimaryGeneratedColumn()
     id:number;
 
-    @Column()
+    @Column({unique:true})
     subcategoryTitle:string;
 
 }

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, OneToMany } from "typeorm";
 import { Course } from "src/course/course.entity";
 
 
@@ -13,13 +13,18 @@ export class User {
     @Column()
     lastName:string;
 
-    @Column()
+    @Column({unique:true})
     email:string;
 
     @Column()
     password:string;
 
-    @ManyToMany(type => Course)
+    @Column({default: false})
+    admin:boolean
+
+    @ManyToMany(type => Course, course => course.users)
     courses: Course[];
 
+    @OneToMany(type => Course, course => course.userAdmin)
+    coursesAdmin:Course[];
 }

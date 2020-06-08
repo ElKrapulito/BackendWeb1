@@ -11,7 +11,7 @@ export class Course {
     @PrimaryGeneratedColumn()
     id:number;
 
-    @Column()
+    @Column({unique:true})
     courseTitle:String;
 
     @Column()
@@ -26,18 +26,21 @@ export class Course {
     @Column()
     hourLenght:number;
     
-    @ManyToMany(type => User)
+    @ManyToMany(type => User, user => user.courses)
     @JoinTable({name: 'inscriptions'})
     users: User[];
 
-    @ManyToOne(type => Category)
+    @ManyToOne(type => Category, category => category.id)
     category: Category;
 
-    @ManyToMany(type => SubCategory)
+    @ManyToMany(type => SubCategory, subcategory => subcategory.id)
     @JoinTable({name:'courses_subcategories'})
     subcategories:SubCategory[];
 
     @OneToMany(type => Topic, topic => topic.course)
     topics: Topic[];
+
+    @ManyToOne(type => User, user => user.coursesAdmin)
+    userAdmin:User
 
 }

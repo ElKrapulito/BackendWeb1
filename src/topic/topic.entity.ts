@@ -24,7 +24,7 @@ export class Topic {
     course:Course;
 
     @ManyToMany(type => User)
-    @JoinTable()
+    @JoinTable({name:'users_topics'})
     users:User[];
 
 }
