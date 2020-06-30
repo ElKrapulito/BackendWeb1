@@ -4,7 +4,6 @@ import { Course } from './course.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/user.entity';
 import { Category } from 'src/category/category.entity';
-import { async } from 'rxjs/internal/scheduler/async';
 
 @Injectable()
 export class CourseService {
@@ -27,7 +26,7 @@ export class CourseService {
         course.description = description;
         course.level = level;
         course.imgUrl = imgUrl;
-        course.hourLenght = hourLength;
+        course.hourLength = hourLength;
         const userAdmin = await this.userRepository.findOne(adminId);
         const category = await this.categoryRepository.findOne(categoryId)
         if (!userAdmin) {
@@ -41,7 +40,7 @@ export class CourseService {
         }
         course.userAdmin = userAdmin;
         course.category = category;
-        await this.courseRepository.save(course);
+        return await this.courseRepository.save(course);
     }
 
     async findOneByTitle(courseTitle: string): Promise<Course> {
@@ -66,10 +65,20 @@ export class CourseService {
             .relation(Course, "topics")
             .of(courseId)
             .loadMany();
+        course.category = await getConnection()
+            .createQueryBuilder()
+            .relation(Course, "category")
+            .of(course)
+            .loadOne();
+        course.userAdmin = await getConnection()
+            .createQueryBuilder()
+            .relation(Course, "userAdmin")
+            .of(course)
+            .loadOne();
         return course;
     }
 
-    async findAllCourseWithCategory() {
+    async findAllCoursesWithCategory() {
         const courses = await this.courseRepository.find();
 
         await Promise.all(courses.map(async course => {
@@ -87,8 +96,31 @@ export class CourseService {
         return courses;
     }
 
+    async findAllCoursesByCategory(categoryId: number) {
+        const courses = await getRepository(Course)
+            .createQueryBuilder("course")
+            .leftJoinAndSelect("course.category", "category")
+            .where("course.category = :id",{ id: categoryId })
+            .getMany();
+        return courses;
+    }
+
+    async searchCourses(term: string): Promise<Course[]> {
+        if(term.length <= 0){
+            return;
+        }
+        const courses = await getRepository(Course)
+            .createQueryBuilder("course")
+            .where("course.courseTitle ilike :term", { term: `%${term}%` })
+            .getMany();
+        return courses;
+    }
+
     async updateCourse(courseTitle: string, description: string, level: string, imgUrl: string, hourLength: number, categoryId: number, courseId: number) {
         const course = await this.courseRepository.findOne(courseId);
+        if(!course){
+            return;
+        }
         if (courseTitle) {
             course.courseTitle = courseTitle;
         }
@@ -102,7 +134,7 @@ export class CourseService {
             course.imgUrl = imgUrl;
         }
         if (hourLength) {
-            course.hourLenght = hourLength;
+            course.hourLength = hourLength;
         }
         if (categoryId) {
             const category = await this.categoryRepository.findOne(categoryId);
@@ -112,7 +144,7 @@ export class CourseService {
             course.category = category;
         }
 
-        await this.courseRepository.update(courseId, course);
+        return await this.courseRepository.save(course);
     }
 
 }

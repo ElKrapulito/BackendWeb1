@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, ManyToOne, OneToMany, JoinColumn } from "typeorm";
 import { User } from "src/user/user.entity";
 import { Category } from "src/category/category.entity";
 import { Topic } from "src/topic/topic.entity";
@@ -24,13 +24,14 @@ export class Course {
     imgUrl:string;
     
     @Column()
-    hourLenght:number;
+    hourLength:number;
     
     @ManyToMany(type => User, user => user.courses)
     @JoinTable({name: 'inscriptions'})
     users: User[];
 
     @ManyToOne(type => Category, category => category.id)
+    @JoinColumn()
     category: Category;
 
     @ManyToMany(type => SubCategory, subcategory => subcategory.id)

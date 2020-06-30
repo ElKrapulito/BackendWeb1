@@ -26,7 +26,7 @@ export class UserController {
         @Body('password') password: string,
         @Body('admin') admin: boolean
     ) {
-        await this.userService.insertUser(fullName, lastName, email, password, admin);
+        return await this.userService.insertUser(fullName, lastName, email, password, admin);
     }
 
     @Post('course')

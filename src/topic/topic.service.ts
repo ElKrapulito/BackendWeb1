@@ -24,7 +24,7 @@ export class TopicService {
             throw new NotFoundException('Course not found with id: ' + idCourse)
         }
         topic.course = course;
-        await this.topicRepository.save(topic);
+        return await this.topicRepository.save(topic);
     }
 
     async findOneTopic(id: number) {

@@ -34,14 +34,14 @@ export class UserService {
     }
 
 
-    async insertUser(fullName: string, lastName: string, email: string, password: string, admin: boolean): Promise<void> {
+    async insertUser(fullName: string, lastName: string, email: string, password: string, admin: boolean): Promise<User> {
         let user = new User();
         user.fullName = fullName;
         user.lastName = lastName;
         user.email = email;
         user.password = password;
         user.admin = admin;
-        await this.userRepository.save(user);
+        return await this.userRepository.save(user);
     }
 
     async beginCourse(userId: number, courseId: number) {

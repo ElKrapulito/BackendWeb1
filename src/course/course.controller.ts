@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Patch } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Patch, ParseIntPipe } from '@nestjs/common';
 import { CourseService } from './course.service';
 
 @Controller('course')
@@ -8,13 +8,23 @@ export class CourseController {
     ){}
 
     @Get(':id')
-    async findOneCourseWithTopics(@Param('id') id:number){
+    async findOneCourseWithTopics(@Param('id', ParseIntPipe) id:number){
         return await this.courseService.findCourseWithTopics(id);
     }
 
     @Get()
-    async findCourseWithCategory(){
-        return await this.courseService.findAllCourseWithCategory();
+    async findCoursesWithCategory(){
+        return await this.courseService.findAllCoursesWithCategory();
+    }
+
+    @Get('category/:id')
+    async findCoursesByCategory(@Param('id') id:number){
+        return await this.courseService.findAllCoursesByCategory(id);
+    }
+
+    @Get('search/:term')
+    async searchCourses(@Param('term') term:string){
+        return this.courseService.searchCourses(term);
     }
 
 
@@ -28,7 +38,7 @@ export class CourseController {
         @Body('adminId') adminId:number,
         @Body('categoryId') categoryId:number
     ){
-        await this.courseService.insertCourse(courseTitle,description,level,imgUrl,hourLength,adminId,categoryId);
+        return await this.courseService.insertCourse(courseTitle,description,level,imgUrl,hourLength,adminId,categoryId);
     }
 
     @Patch(':id')
@@ -41,6 +51,6 @@ export class CourseController {
         @Body('categoryId') categoryId:number,
         @Param('id') courseId:number
     ){
-        await this.courseService.updateCourse(courseTitle,description,level,imgUrl,hourLength,categoryId,courseId)
+        return await this.courseService.updateCourse(courseTitle,description,level,imgUrl,hourLength,categoryId,courseId)
     }
 }

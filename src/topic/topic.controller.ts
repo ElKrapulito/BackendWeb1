@@ -13,7 +13,7 @@ export class TopicController {
         @Body('content') content: string,
         @Body('courseId') courseId: number
     ) {
-        await this.topicService.insertTopic(topicTitle, description, type, content, courseId);
+        return await this.topicService.insertTopic(topicTitle, description, type, content, courseId);
     }
 
     @Get(':id')
