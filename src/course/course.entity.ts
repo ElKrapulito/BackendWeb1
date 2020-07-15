@@ -5,29 +5,32 @@ import { Topic } from "src/topic/topic.entity";
 import { SubCategory } from "src/subcategory/subcategory.entity";
 
 
-@Entity({name:'courses'})
+@Entity({ name: 'courses' })
 export class Course {
 
     @PrimaryGeneratedColumn()
-    id:number;
+    id: number;
 
-    @Column({unique:true})
-    courseTitle:String;
-
-    @Column()
-    description:string;
+    @Column({ unique: true })
+    courseTitle: String;
 
     @Column()
-    level:string;
+    description: string;
 
     @Column()
-    imgUrl:string;
-    
+    level: string;
+
+    @Column({ nullable:true })
+    imgUrl: string;
+
+    @Column({ nullable: true })
+    mimetype: string;
+
     @Column()
-    hourLength:number;
-    
+    hourLength: number;
+
     @ManyToMany(type => User, user => user.courses)
-    @JoinTable({name: 'inscriptions'})
+    @JoinTable({ name: 'inscriptions' })
     users: User[];
 
     @ManyToOne(type => Category, category => category.id)
@@ -35,13 +38,15 @@ export class Course {
     category: Category;
 
     @ManyToMany(type => SubCategory, subcategory => subcategory.id)
-    @JoinTable({name:'courses_subcategories'})
-    subcategories:SubCategory[];
+    @JoinTable({ name: 'courses_subcategories' })
+    subcategories: SubCategory[];
 
     @OneToMany(type => Topic, topic => topic.course)
     topics: Topic[];
 
     @ManyToOne(type => User, user => user.coursesAdmin)
-    userAdmin:User
+    userAdmin: User;
+
+    url: string;
 
 }

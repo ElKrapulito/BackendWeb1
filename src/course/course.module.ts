@@ -5,11 +5,18 @@ import { CourseController } from './course.controller';
 import { CourseService } from './course.service';
 import { User } from 'src/user/user.entity';
 import { Category } from 'src/category/category.entity';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
-    imports:[TypeOrmModule.forFeature([Course,User,Category])],
-    controllers:[CourseController],
-    providers:[CourseService],
-    exports:[TypeOrmModule]
+    imports: [
+        TypeOrmModule.forFeature([Course, User, Category]), 
+        MulterModule.registerAsync({
+            useFactory: () => ({
+                dest: './upload'
+            })
+        })],
+    controllers: [CourseController],
+    providers: [CourseService],
+    exports: [TypeOrmModule, MulterModule]
 })
-export class CourseModule {}
+export class CourseModule { }

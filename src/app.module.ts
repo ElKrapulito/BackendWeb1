@@ -19,10 +19,9 @@ import { SubcategoryService } from './subcategory/subcategory.service';
 import { SubcategoryModule } from './subcategory/subcategory.module';
 import { Connection } from 'typeorm';
 import { AuthModule } from './auth/auth.module';
-import { ImagesModule } from './images/images.module';
 
 @Module({
-  imports: [UserModule, CourseModule, TopicModule, CategoryModule, SubcategoryModule, TypeOrmModule.forRoot(), AuthModule, ImagesModule],
+  imports: [UserModule, CourseModule, TopicModule, CategoryModule, SubcategoryModule, TypeOrmModule.forRoot(), AuthModule,],
   controllers: [AppController, UserController, CourseController, TopicController, CategoryController, SubcategoryController],
   providers: [AppService, UserService, CourseService, TopicService, CategoryService, SubcategoryService],
 })
