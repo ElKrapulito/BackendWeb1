@@ -39,4 +39,34 @@ export class TopicService {
 
         return topic;
     }
+
+    async updateTopic(topicId: number, topicTitle: string, description: string, type: string, content: string) {
+        const topic = await this.topicRepository.findOne(topicId);
+        if(!topic){
+            throw new NotFoundException(`Topic not found with id:${topicId}`)
+        }
+
+        if(topicTitle){
+            topic.topicTitle = topicTitle;
+        }
+
+        if(description){
+            topic.description = description;
+        }
+
+        if(type){
+            topic.type = type;
+        }
+
+        if(content){
+            topic.content = content;
+        }
+
+        const newTopic =  await this.topicRepository.save(topic);
+        newTopic.course = await this.courseRepository.createQueryBuilder()
+            .relation(Topic, "course")
+            .of(topic)
+            .loadOne();
+        return newTopic;
+    }
 }

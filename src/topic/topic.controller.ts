@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch } from '@nestjs/common';
 import { TopicService } from './topic.service';
 
 @Controller('topic')
@@ -19,6 +19,17 @@ export class TopicController {
     @Get(':id')
     async findOneTopic(@Param('id') id:number){
         return await this.topicService.findOneTopic(id);
+    }
+
+    @Patch(':id')
+    async updateTopic(
+        @Param('id') topicId:number,
+        @Body('topicTitle') topicTitle: string,
+        @Body('description') description: string,
+        @Body('type') type: string,
+        @Body('content') content: string,
+    ){
+        return this.topicService.updateTopic(topicId,topicTitle,description,type,content);
     }
 
 }
