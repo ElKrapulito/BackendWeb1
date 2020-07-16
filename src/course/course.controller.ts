@@ -20,8 +20,8 @@ export class CourseController {
     }
 
     @Get('category/:id')
-    async findCoursesByCategory(@Param('id') id:number){
-        return await this.courseService.findAllCoursesByCategory(id);
+    async findCoursesByCategory(@Param('id') id:number, @Req() req){
+        return await this.courseService.findAllCoursesByCategory(id, req);
     }
 
     @Get('search/:term')

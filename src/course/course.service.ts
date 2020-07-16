@@ -118,12 +118,28 @@ export class CourseService {
         return courses;
     }
 
-    async findAllCoursesByCategory(categoryId: number) {
+    async findAllCoursesByCategory(categoryId: number, req) {
         const courses = await getRepository(Course)
             .createQueryBuilder("course")
             .leftJoinAndSelect("course.category", "category")
             .where("course.category = :id", { id: categoryId })
             .getMany();
+            await Promise.all(courses.map(async course => {
+                course.category = await getConnection()
+                    .createQueryBuilder()
+                    .relation(Course, "category")
+                    .of(course)
+                    .loadOne();
+                course.userAdmin = await getConnection()
+                    .createQueryBuilder()
+                    .relation(Course, "userAdmin")
+                    .of(course)
+                    .loadOne();
+            }));
+            courses.forEach(course => {
+                course.url = this.makeImageUrl(req, course);
+            });
+            
         return courses;
     }
 
