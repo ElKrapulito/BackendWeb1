@@ -28,6 +28,15 @@ export class TopicService {
     }
 
     async findOneTopic(id: number) {
-        return await this.topicRepository.findOne(id);
+        const topic = await this.topicRepository.findOne(id);
+        if(!topic){
+            throw new NotFoundException(`Topic not found with id: ${id}`)
+        }
+        topic.course = await this.courseRepository.createQueryBuilder()
+            .relation(Topic, "course")
+            .of(topic)
+            .loadOne();
+
+        return topic;
     }
 }
