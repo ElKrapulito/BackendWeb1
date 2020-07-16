@@ -34,7 +34,7 @@ export class UserController {
         @Body('userId') userId:number,
         @Body('courseId') courseId:number
     ){
-        await this.userService.beginCourse(userId,courseId);
+        return await this.userService.beginCourse(userId,courseId);
     }
 
 }

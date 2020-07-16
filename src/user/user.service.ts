@@ -33,7 +33,6 @@ export class UserService {
         return user;
     }
 
-
     async insertUser(fullName: string, lastName: string, email: string, password: string, admin: boolean): Promise<User> {
         let user = new User();
         user.fullName = fullName;
@@ -45,7 +44,7 @@ export class UserService {
     }
 
     async beginCourse(userId: number, courseId: number) {
-        await getConnection()
+        return await getConnection()
             .createQueryBuilder()
             .insert()
             .into("inscriptions")
