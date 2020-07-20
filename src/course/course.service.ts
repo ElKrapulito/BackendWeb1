@@ -67,6 +67,15 @@ export class CourseService {
         return course;
     }
 
+    async findManyByAdmin(adminId: number): Promise<Course[]> {
+        const courses = await getRepository(Course)
+            .createQueryBuilder("courses")
+            .where("'courses.userAdminId' = :adminId", { adminId: adminId })
+            .getMany();
+        
+        return courses;
+    }
+
     async findOne(id: number): Promise<Course> {
         const course = await this.courseRepository.findOne(id)
         /*const host = req.get('host')

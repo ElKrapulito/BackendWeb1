@@ -23,13 +23,30 @@ export class UserService {
         return user;
     }
 
-    async findUserWithCourses(userId: number): Promise<User> {
+    async findUserWithCourses(userId: number, req): Promise<User> {
         const user = await getConnection().manager.findOne(User, userId);
         user.courses = await getConnection()
             .createQueryBuilder()
             .relation(User, "courses")
             .of(user)
             .loadMany();
+        await Promise.all(user.courses.map(
+            async course => {
+                course.category = await getConnection()
+                    .createQueryBuilder()
+                    .relation(Course, "category")
+                    .of(course)
+                    .loadOne();
+                course.userAdmin = await getConnection()
+                    .createQueryBuilder()
+                    .relation(Course, "userAdmin")
+                    .of(course)
+                    .loadOne();
+            }))
+            user.courses.forEach(course => {
+                course.url = this.makeImageUrl(req, course);
+            });
+
         return user;
     }
 
@@ -77,6 +94,11 @@ export class UserService {
         }
 
         await this.userRepository.update(id, user);
+    }
+
+    private makeImageUrl(req, course:Course):string {
+        const host = req.get('host');
+        return `http://${host}/course/image/${course.id}`;
     }
 
 }

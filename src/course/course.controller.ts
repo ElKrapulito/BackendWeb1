@@ -37,6 +37,11 @@ export class CourseController {
         return res.sendFile(course.imgUrl, { root: './upload' });
     }
 
+    @Get('user/:id')
+    async getAdminCourses(@Param('id') adminId:number){
+        return this.courseService.findManyByAdmin(adminId);
+    }
+
     @Post()
     async insertCourse(
         @Body('courseTitle') courseTitle:string,
