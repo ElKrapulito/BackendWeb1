@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, Patch, Delete } from '@nestjs/common';
 import { TopicService } from './topic.service';
 
 @Controller('topic')
@@ -30,6 +30,11 @@ export class TopicController {
         @Body('content') content: string,
     ){
         return this.topicService.updateTopic(topicId,topicTitle,description,type,content);
+    }
+
+    @Delete(':id')
+    async deleteTopic(@Param('id') id: number){
+        return await this.topicService.deleteTopic(id);
     }
 
 }

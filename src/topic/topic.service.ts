@@ -69,4 +69,8 @@ export class TopicService {
             .loadOne();
         return newTopic;
     }
+
+    async deleteTopic(id:number){
+        return await this.topicRepository.delete(id);
+    }
 }

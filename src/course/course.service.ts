@@ -152,6 +152,31 @@ export class CourseService {
         return courses;
     }
 
+    async findCoursesByUserAdmin(id:number, req){
+        const courses = await getRepository(Course)
+            .createQueryBuilder("course")
+            .leftJoinAndSelect("course.category", "category")
+            .where("course.userAdmin = :id", { id: id })
+            .getMany();
+            await Promise.all(courses.map(async course => {
+                course.category = await getConnection()
+                    .createQueryBuilder()
+                    .relation(Course, "category")
+                    .of(course)
+                    .loadOne();
+                course.userAdmin = await getConnection()
+                    .createQueryBuilder()
+                    .relation(Course, "userAdmin")
+                    .of(course)
+                    .loadOne();
+            }));
+            courses.forEach(course => {
+                course.url = this.makeImageUrl(req, course);
+            });
+            
+        return courses;
+    }
+
     async searchCourses(term: string, req): Promise<Course[]> {
         if (term.length <= 0) {
             return;
@@ -195,9 +220,9 @@ export class CourseService {
         return newCourse;
     }
 
-    /*fs.unlink(`./upload/${id}`, err => {
-            console.log(err);
-        });*/
+    async courseDelete(id:number){
+        return await this.courseRepository.delete(id);
+    }
 
     private makeImageUrl(req, course:Course):string {
         const host = req.get('host');

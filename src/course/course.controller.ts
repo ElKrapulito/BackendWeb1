@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Body, Patch, ParseIntPipe, UseInterceptors, UploadedFile, Res, Req } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Patch, ParseIntPipe, UseInterceptors, UploadedFile, Res, Req, Delete } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -38,6 +38,11 @@ export class CourseController {
     }
 
     @Get('user/:id')
+    async coursesByUserAdminId(@Param('id') id:number, @Req() req){
+        return this.courseService.findCoursesByUserAdmin(id, req);
+    }
+
+    @Get('user/:id')
     async getAdminCourses(@Param('id') adminId:number){
         return this.courseService.findManyByAdmin(adminId);
     }
@@ -72,5 +77,10 @@ export class CourseController {
         @Req() req
     ){
         return await this.courseService.updateCourse(courseTitle,description,level,hourLength,categoryId,courseId,req);
+    }
+
+    @Delete(':id')
+    async deleteCourse(@Param('id') id:number){
+        return await this.courseService.courseDelete(id);
     }
 }
